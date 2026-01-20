@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>沖繩 - 2026</title>
+    <title>沖繩之旅</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,7 +13,7 @@
         .card-shadow { box-shadow: 0 4px 15px rgba(44, 125, 160, 0.1); }
         .nav-active { color: #2C7DA0; transform: translateY(-4px); }
         .hidden { display: none; }
-        .timeline-line::before { content: ''; position: absolute; left: 1.25rem; top: 2rem; bottom: 0; width: 2px; border-left: 2px dashed #BAE6FD; }
+        .timeline-dot::before { content: ''; position: absolute; left: 1.25rem; top: 2rem; bottom: 0; width: 2px; border-left: 2px dashed #BAE6FD; }
     </style>
 </head>
 <body class="pb-24">
@@ -21,150 +21,112 @@
     <header class="ocean-gradient text-white p-6 rounded-b-[40px] sticky top-0 z-50 shadow-lg">
         <div class="flex justify-between items-center">
             <div>
-                <h1 class="text-2xl font-bold flex items-center gap-2">沖繩 · OKINAWA</h1>
-                <p class="text-xs opacity-80 mt-1">1/24 - 1/27 · 自駕之旅</p>
+                <h1 class="text-2xl font-bold flex items-center gap-2">OKINAWA 2026</h1>
+                <p class="text-xs opacity-80 mt-1">1/24 - 1/27 ·時間表</p>
             </div>
-            <div id="weather-icon" class="text-3xl"><i class="fas fa-sun"></i></div>
+            <div class="text-3xl"><i class="fas fa-heart text-rose-300"></i></div>
         </div>
     </header>
 
     <main id="app" class="p-4">
         <section id="page-plan" class="page-section">
             <h2 class="text-xl font-bold text-slate-700 mb-4 border-l-4 border-sky-500 pl-2">行程時間表</h2>
-            
-            <div id="itinerary-list" class="space-y-8">
+            <div id="itinerary-list" class="space-y-8 timeline-dot">
                 </div>
         </section>
 
         <section id="page-wallet" class="page-section hidden">
-            <h2 class="text-xl font-bold text-slate-700 mb-4 border-l-4 border-emerald-500 pl-2">記帳與換算</h2>
-            <div class="bg-white rounded-2xl p-5 mb-6 card-shadow border border-emerald-100">
-                <p class="text-xs text-slate-400 mb-2">匯率：1 JPY ≈ <input type="number" id="rate-input" value="0.21" step="0.01" class="w-12 border-b"> TWD</p>
-                <input type="text" id="calc-display" readonly placeholder="輸入算式..." class="w-full text-right text-2xl font-bold text-slate-700 mb-2 focus:outline-none">
-                <div class="text-right text-emerald-600 font-bold text-sm mb-4" id="twd-result">≈ NT$ 0</div>
+            <h2 class="text-xl font-bold text-slate-700 mb-4 border-l-4 border-emerald-500 pl-2">記帳換算</h2>
+            <div class="bg-white rounded-2xl p-5 mb-6 card-shadow border border-emerald-100 text-center">
+                <p class="text-xs text-slate-400 mb-2">1 JPY ≈ <input type="number" id="rate-input" value="0.21" step="0.01" class="w-12 border-b"> TWD</p>
+                <input type="text" id="calc-display" readonly placeholder="輸入金額..." class="w-full text-right text-3xl font-bold text-slate-700 mb-2">
+                <div id="twd-result" class="text-emerald-600 font-bold mb-4">≈ NT$ 0</div>
                 <div class="grid grid-cols-4 gap-2">
-                    <button class="bg-slate-100 p-3 rounded-xl font-bold" onclick="calcInput('7')">7</button>
-                    <button class="bg-slate-100 p-3 rounded-xl font-bold" onclick="calcInput('8')">8</button>
-                    <button class="bg-slate-100 p-3 rounded-xl font-bold" onclick="calcInput('9')">9</button>
-                    <button class="bg-orange-100 p-3 rounded-xl font-bold text-orange-600" onclick="calcInput('/')">÷</button>
-                    <button class="bg-slate-100 p-3 rounded-xl font-bold" onclick="calcInput('4')">4</button>
-                    <button class="bg-slate-100 p-3 rounded-xl font-bold" onclick="calcInput('5')">5</button>
-                    <button class="bg-slate-100 p-3 rounded-xl font-bold" onclick="calcInput('6')">6</button>
-                    <button class="bg-orange-100 p-3 rounded-xl font-bold text-orange-600" onclick="calcInput('*')">×</button>
-                    <button class="bg-slate-100 p-3 rounded-xl font-bold" onclick="calcInput('1')">1</button>
-                    <button class="bg-slate-100 p-3 rounded-xl font-bold" onclick="calcInput('2')">2</button>
-                    <button class="bg-slate-100 p-3 rounded-xl font-bold" onclick="calcInput('3')">3</button>
-                    <button class="bg-orange-100 p-3 rounded-xl font-bold text-orange-600" onclick="calcInput('-')">-</button>
-                    <button class="bg-slate-100 p-3 rounded-xl font-bold" onclick="calcInput('0')">0</button>
-                    <button class="bg-slate-200 p-3 rounded-xl font-bold" onclick="calcClear()">C</button>
-                    <button class="bg-emerald-500 p-3 rounded-xl font-bold text-white" onclick="calcResult()">=</button>
-                    <button class="bg-orange-100 p-3 rounded-xl font-bold text-orange-600" onclick="calcInput('+')">+</button>
-                </div>
+                    <button class="bg-slate-100 p-4 rounded-xl font-bold" onclick="calcInput('7')">7</button>
+                    <button class="bg-slate-100 p-4 rounded-xl font-bold" onclick="calcInput('8')">8</button>
+                    <button class="bg-slate-100 p-4 rounded-xl font-bold" onclick="calcInput('9')">9</button>
+                    <button class="bg-orange-100 p-4 rounded-xl text-orange-600" onclick="calcInput('/')">/</button>
+                    </div>
             </div>
-            <div id="bill-list" class="space-y-3"></div>
         </section>
 
         <section id="page-lists" class="page-section hidden">
-            <h2 class="text-xl font-bold text-slate-700 mb-4 border-l-4 border-amber-500 pl-2">清單管理</h2>
-            
             <div class="mb-8">
-                <h3 class="text-sm font-bold text-sky-600 mb-2 flex items-center gap-2"><i class="fas fa-passport"></i> 行前準備</h3>
-                <div id="pre-trip-list" class="bg-white rounded-2xl p-4 card-shadow space-y-3"></div>
-                <div class="mt-2 flex gap-2">
-                    <input type="text" id="new-pre-item" placeholder="新增準備事項..." class="flex-1 p-2 text-sm bg-transparent border-b focus:outline-none">
-                    <button onclick="addItem('pre')" class="text-sky-500 p-2"><i class="fas fa-plus"></i></button>
-                </div>
+                <h3 class="text-sm font-bold text-sky-600 mb-2 border-b">✈️ 行前準備</h3>
+                <div id="pre-trip-list" class="space-y-2 mt-2"></div>
             </div>
-
             <div class="mb-8">
-                <h3 class="text-sm font-bold text-amber-600 mb-2 flex items-center gap-2"><i class="fas fa-shopping-bag"></i> 必買清單</h3>
-                <div id="must-buy-list" class="bg-white rounded-2xl p-4 card-shadow space-y-3"></div>
-                <div class="mt-2 flex gap-2">
-                    <input type="text" id="new-buy-item" placeholder="新增想買的東西..." class="flex-1 p-2 text-sm bg-transparent border-b focus:outline-none">
-                    <button onclick="addItem('buy')" class="text-amber-500 p-2"><i class="fas fa-plus"></i></button>
-                </div>
+                <h3 class="text-sm font-bold text-amber-600 mb-2 border-b">🛍️ 必買/必吃</h3>
+                <div id="must-buy-list" class="space-y-2 mt-2"></div>
             </div>
-
-            <div>
-                <h3 class="text-sm font-bold text-slate-500 mb-2 flex items-center gap-2"><i class="fas fa-sticky-note"></i> 個人備忘錄</h3>
-                <textarea id="memo-input" rows="4" oninput="saveMemo()" placeholder="貼上網址或隨手記..." class="w-full bg-white rounded-2xl p-4 card-shadow focus:outline-none text-slate-600 text-sm"></textarea>
+            <div class="mb-8">
+                <h3 class="text-sm font-bold text-rose-500 mb-2 border-b">🍱 D4 午餐備選</h3>
+                <div class="bg-white p-4 rounded-xl card-shadow text-sm space-y-1 text-slate-600">
+                    <p>• 美食街牛排</p>
+                    <p>• 塔可飯 (Rycom)</p>
+                    <p>• 魁力屋拉麵</p>
+                    <p>• 五穀日式定食</p>
+                </div>
             </div>
         </section>
 
         <section id="page-info" class="page-section hidden">
-            <h2 class="text-xl font-bold text-slate-700 mb-4 border-l-4 border-indigo-500 pl-2">旅遊工具</h2>
-            <div class="grid grid-cols-2 gap-3">
-                <a href="https://www.tenki.jp/forecast/10/50/" target="_blank" class="bg-white p-4 rounded-2xl shadow-sm text-center">
-                    <i class="fas fa-cloud-sun text-indigo-500 text-2xl mb-2"></i>
-                    <div class="text-xs font-bold">天氣預報</div>
-                </a>
-                <a href="https://translate.google.com/" target="_blank" class="bg-white p-4 rounded-2xl shadow-sm text-center">
-                    <i class="fas fa-language text-indigo-500 text-2xl mb-2"></i>
-                    <div class="text-xs font-bold">Google 翻譯</div>
-                </a>
+            <h2 class="text-xl font-bold text-slate-700 mb-4 border-l-4 border-indigo-500 pl-2">工具箱</h2>
+            <div class="space-y-4">
+                <div class="bg-white p-4 rounded-xl card-shadow">
+                    <h4 class="font-bold text-indigo-600 mb-1">取車 Check!</h4>
+                    <p class="text-xs text-slate-500">駕照正本、日文譯本、護照</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl card-shadow">
+                    <h4 class="font-bold text-rose-500 mb-1">還車提醒</h4>
+                    <p class="text-xs text-slate-500">D4 16:30 前須抵達租車公司，避開那霸塞車。</p>
+                </div>
             </div>
         </section>
     </main>
 
     <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t flex justify-around p-3 pb-6 z-50">
-        <button class="nav-btn nav-active" onclick="switchPage('plan')"><i class="fas fa-map-location-dot block text-xl mb-1"></i><span class="text-[10px]">PLAN</span></button>
+        <button class="nav-btn nav-active" onclick="switchPage('plan')"><i class="fas fa-calendar-alt block text-xl mb-1"></i><span class="text-[10px]">PLAN</span></button>
         <button class="nav-btn text-slate-400" onclick="switchPage('wallet')"><i class="fas fa-wallet block text-xl mb-1"></i><span class="text-[10px]">WALLET</span></button>
-        <button class="nav-btn text-slate-400" onclick="switchPage('lists')"><i class="fas fa-check-double block text-xl mb-1"></i><span class="text-[10px]">LISTS</span></button>
-        <button class="nav-btn text-slate-400" onclick="switchPage('info')"><i class="fas fa-circle-info block text-xl mb-1"></i><span class="text-[10px]">INFO</span></button>
+        <button class="nav-btn text-slate-400" onclick="switchPage('lists')"><i class="fas fa-clipboard-list block text-xl mb-1"></i><span class="text-[10px]">LISTS</span></button>
+        <button class="nav-btn text-slate-400" onclick="switchPage('info')"><i class="fas fa-info-circle block text-xl mb-1"></i><span class="text-[10px]">INFO</span></button>
     </nav>
 
     <script>
-        // --- 行程資料 (含詳細時間表) ---
         const tripSchedule = [
-            { 
-                day: 1, date: "1/24 (五)", title: "那霸市區巡禮", hotel: "JR九州Blossom那霸",
+            { day: 1, date: "1/24 (五)", title: "那霸市區", hotel: "Blossom那霸",
                 timeline: [
-                    { time: "15:45", event: "抵達機場 & 取車" },
-                    { time: "17:30", event: "飯店 Check-in" },
-                    { time: "18:30", event: "晚餐：石垣牛 MARU" },
-                    { time: "20:00", event: "國際通、雪鹽霜淇淋、採買" }
+                    { time: "15:45", event: "抵達機場取車" },
+                    { time: "18:30", event: "晚餐：EIBUN / 小やじ" },
+                    { time: "20:00", event: "國際通藥妝採買" }
                 ]
             },
-            { 
-                day: 2, date: "1/25 (六)", title: "神社與夕陽", hotel: "沖繩蒙特利 Spa 度假酒店",
+            { day: 2, date: "1/25 (六)", title: "咖啡與夕陽", hotel: "蒙特利酒店",
                 timeline: [
-                    { time: "09:00", event: "牧志市場 (豬肉蛋飯糰)" },
-                    { time: "10:30", event: "波上宮參拜" },
-                    { time: "12:00", event: "牧志市場午餐 (沙翁)" },
-                    { time: "14:30", event: "美國村逛街" },
-                    { time: "16:30", event: "北谷海邊看夕陽" },
-                    { time: "18:30", event: "晚餐：塔可飯 Kijimuna" }
+                    { time: "11:00", event: "波上宮參拜" },
+                    { time: "12:30", event: "Cerrado Coffee ☕" },
+                    { time: "13:00", event: "A&W 牧港店" },
+                    { time: "14:00", event: "PARCO CITY 逛街" },
+                    { time: "17:00", event: "北谷公園日落 🌇" },
+                    { time: "18:30", event: "美國村晚餐" }
                 ]
             },
-            { 
-                day: 3, date: "1/26 (日)", title: "北部藍色冒險", hotel: "星野集團 BEB5 瀨良垣",
+            { day: 3, date: "1/26 (日)", title: "北部藍色冒險", hotel: "BEB5 瀨良垣",
                 timeline: [
-                    { time: "11:30", event: "美麗海水族館" },
-                    { time: "15:00", event: "Shinmei Coffee (黑糖拿鐵)" },
-                    { time: "16:00", event: "古宇利大橋 & 心型岩" },
-                    { time: "19:30", event: "晚餐：琉球之牛 (預約制)" }
+                    { time: "11:00", event: "美麗海水族館" },
+                    { time: "14:00", event: "Shinmei 黑糖拿鐵" },
+                    { time: "16:30", event: "古宇利蝦蝦飯" },
+                    { time: "18:30", event: "琉球之牛 (預約制)" }
                 ]
             },
-            { 
-                day: 4, date: "1/27 (一)", title: "最後採買與賦歸", hotel: "Sweet Home",
+            { day: 4, date: "1/27 (一)", title: "最後採買", hotel: "Home",
                 timeline: [
-                    { time: "10:00", event: "萬座毛絕景" },
-                    { time: "12:00", event: "永旺夢樂城 Rycom (午餐)" },
-                    { time: "15:00", event: "瀨長島 (by・The・Shrimp)" },
-                    { time: "16:30", event: "還車 (務必此時前抵達)" },
-                    { time: "20:30", event: "JX313 起飛" }
+                    { time: "10:30", event: "永旺夢樂城 Rycom" },
+                    { time: "12:00", event: "美食街午餐" },
+                    { time: "14:45", event: "出發往瀨長島 ✈️" },
+                    { time: "16:30", event: "還車結束行程" }
                 ]
             }
-        ];
-
-        // --- 初始化 LocalStorage ---
-        let preItems = JSON.parse(localStorage.getItem('preItems')) || [
-            { text: "護照、駕照正本+日文譯本", done: false },
-            { text: "日幣現金、信用卡", done: false }
-        ];
-        let buyItems = JSON.parse(localStorage.getItem('buyItems')) || [
-            { text: "雪鹽霜淇淋", done: false },
-            { text: "沙翁", done: false }
         ];
 
         function switchPage(pageId) {
@@ -175,29 +137,19 @@
             window.scrollTo(0,0);
         }
 
-        // --- PLAN 渲染 ---
         function renderPlan() {
             const list = document.getElementById('itinerary-list');
             list.innerHTML = tripSchedule.map(d => `
-                <div class="bg-white rounded-[2rem] p-6 card-shadow border border-sky-50">
+                <div class="bg-white rounded-3xl p-5 card-shadow border border-sky-50 relative">
                     <div class="flex justify-between items-center mb-4">
-                        <div>
-                            <span class="bg-sky-500 text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider">Day ${d.day}</span>
-                            <h3 class="text-lg font-bold text-slate-700 mt-1">${d.title}</h3>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-xs text-slate-400 block">${d.date}</span>
-                            <span class="text-[10px] text-sky-400 font-bold"><i class="fas fa-hotel"></i> ${d.hotel}</span>
-                        </div>
+                        <span class="bg-sky-500 text-white text-[10px] px-3 py-1 rounded-full font-bold">D${d.day} · ${d.date}</span>
+                        <span class="text-[10px] text-sky-400 font-bold"><i class="fas fa-hotel"></i> ${d.hotel}</span>
                     </div>
-                    <div class="space-y-4 border-l-2 border-sky-100 ml-2 pl-6 relative">
+                    <div class="space-y-4 border-l-2 border-sky-100 ml-2 pl-6">
                         ${d.timeline.map(t => `
-                            <div class="relative">
-                                <div class="absolute -left-[1.95rem] top-1 w-3 h-3 rounded-full bg-white border-2 border-sky-400"></div>
-                                <div class="flex gap-3">
-                                    <span class="text-xs font-bold text-sky-500 w-10">${t.time}</span>
-                                    <span class="text-sm text-slate-600">${t.event}</span>
-                                </div>
+                            <div class="flex gap-4">
+                                <span class="text-xs font-bold text-sky-500 w-10">${t.time}</span>
+                                <span class="text-sm text-slate-600 font-medium">${t.event}</span>
                             </div>
                         `).join('')}
                     </div>
@@ -205,68 +157,7 @@
             `).join('');
         }
 
-        // --- LISTS 渲染 ---
-        function renderLists() {
-            renderSection('pre-trip-list', preItems, 'pre');
-            renderSection('must-buy-list', buyItems, 'buy');
-        }
-
-        function renderSection(id, data, type) {
-            const container = document.getElementById(id);
-            container.innerHTML = data.map((item, i) => `
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3" onclick="toggleItem('${type}', ${i})">
-                        <i class="${item.done ? 'fas fa-check-circle text-emerald-500' : 'far fa-circle text-slate-300'} text-lg"></i>
-                        <span class="${item.done ? 'line-through text-slate-300' : 'text-slate-600'} text-sm">${item.text}</span>
-                    </div>
-                    <button onclick="deleteItem('${type}', ${i})" class="text-slate-200"><i class="fas fa-times"></i></button>
-                </div>
-            `).join('');
-        }
-
-        function addItem(type) {
-            const inputId = type === 'pre' ? 'new-pre-item' : 'new-buy-item';
-            const input = document.getElementById(inputId);
-            if (!input.value) return;
-            const newItem = { text: input.value, done: false };
-            if (type === 'pre') { preItems.push(newItem); localStorage.setItem('preItems', JSON.stringify(preItems)); }
-            else { buyItems.push(newItem); localStorage.setItem('buyItems', JSON.stringify(buyItems)); }
-            input.value = "";
-            renderLists();
-        }
-
-        function toggleItem(type, i) {
-            if (type === 'pre') { preItems[i].done = !preItems[i].done; localStorage.setItem('preItems', JSON.stringify(preItems)); }
-            else { buyItems[i].done = !buyItems[i].done; localStorage.setItem('buyItems', JSON.stringify(buyItems)); }
-            renderLists();
-        }
-
-        function deleteItem(type, i) {
-            if (type === 'pre') { preItems.splice(i, 1); localStorage.setItem('preItems', JSON.stringify(preItems)); }
-            else { buyItems.splice(i, 1); localStorage.setItem('buyItems', JSON.stringify(buyItems)); }
-            renderLists();
-        }
-
-        // --- WALLET (簡單計算機邏輯) ---
-        function calcInput(v) { document.getElementById('calc-display').value += v; }
-        function calcClear() { document.getElementById('calc-display').value = ""; }
-        function calcResult() {
-            const display = document.getElementById('calc-display');
-            const rate = parseFloat(document.getElementById('rate-input').value);
-            try {
-                const res = eval(display.value) || 0;
-                display.value = res;
-                document.getElementById('twd-result').innerText = `≈ NT$ ${Math.round(res * rate)}`;
-            } catch { display.value = "Error"; }
-        }
-
-        function saveMemo() { localStorage.setItem('memo', document.getElementById('memo-input').value); }
-
-        window.onload = () => {
-            renderPlan();
-            renderLists();
-            document.getElementById('memo-input').value = localStorage.getItem('memo') || "";
-        };
+        window.onload = () => { renderPlan(); };
     </script>
 </body>
 </html>
