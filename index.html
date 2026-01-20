@@ -180,7 +180,12 @@
         <button class="nav-btn text-slate-400" onclick="tab('info', this)"><i class="fas fa-info-circle text-xl mb-1"></i><p class="text-[10px]">INFO</p></button>
     </nav>
 
+
     <script>
+        const SUPABASE_URL = 'https://avkkgiuqkipmzjeudscu.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_jMgxCh5redMUsm4rMLifXQ_iL6JEpDE';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
         const RATE = 0.21;
         let activeDay = 1;
         let tempImg = "";
