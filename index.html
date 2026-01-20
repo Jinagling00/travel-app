@@ -3,275 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OKINAWA | 00 & 小宇</title>
+    <title>OKINAWA 2026 | 00 & 小宇</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        :root { --main-blue: #0ea5e9; --glass: rgba(255, 255, 255, 0.8); }
-        body { font-family: 'Noto Sans TC', 'Quicksand', sans-serif; background: #f0f9ff; color: #1e293b; }
-        .glass-card { background: var(--glass); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.3); border-radius: 24px; }
-        .ocean-bg { background: linear-gradient(160deg, #075985 0%, #0ea5e9 100%); }
-        .nav-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .nav-active { color: #0ea5e9; transform: scale(1.1); }
-        .calc-btn { background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .calc-btn:active { transform: translateY(2px); box-shadow: none; }
-        .day-active { background: #0ea5e9 !important; color: white !important; box-shadow: 0 4px 12px rgba(14,165,233,0.3); }
-        input, select, textarea { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; outline: none; transition: 0.3s; }
-        input:focus { border-color: #0ea5e9; ring: 2px solid #bae6fd; }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #F7F3EE; color: #334155; }
+        .ocean-gradient { background: linear-gradient(135deg, #075985 0%, #38BDF8 100%); }
+        .card-shadow { box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.05); }
+        .nav-active { color: #0284c7; transform: translateY(-3px); font-weight: 700; }
+        .hidden { display: none; }
+        .day-btn-active { background-color: #0284c7; color: white; border-color: #0284c7; }
+        .line-through-text { text-decoration: line-through; color: #CBD5E1; }
+        .calc-btn { transition: all 0.1s; background: white; border: 1px solid #F1F5F9; }
+        .calc-btn:active { transform: scale(0.95); background: #F1F5F9; }
+        textarea, input, select { border: 1px solid #E2E8F0; border-radius: 12px; padding: 10px; outline: none; }
     </style>
 </head>
-<body class="pb-32">
+<body class="pb-28">
 
-    <header class="ocean-bg text-white p-8 rounded-b-[3rem] shadow-2xl relative overflow-hidden">
-        <div class="relative z-10">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h1 class="text-3xl font-bold tracking-tighter">Okinawa 2026</h1>
-                    <p id="countdown-text" class="text-xs opacity-80 mt-1 font-medium"></p>
-                </div>
-                <div class="text-center bg-white/20 p-2 rounded-2xl backdrop-blur-md">
-                    <span id="jpy-rate-display" class="text-xs font-bold block">1 JPY = 0.21 TWD</span>
-                </div>
+    <header class="ocean-gradient text-white p-6 rounded-b-[40px] shadow-lg mb-6">
+        <div class="flex justify-between items-center mb-4">
+            <div>
+                <h1 class="text-2xl font-bold">Okinawa 2026</h1>
+                <p class="text-xs opacity-80">1/24 (六) - 1/27 (二)</p>
             </div>
-            
-            <div class="grid grid-cols-2 gap-4 mt-2">
-                <div class="bg-white/10 p-4 rounded-3xl backdrop-blur-sm border border-white/10 text-center">
-                    <div class="text-[10px] uppercase opacity-60">Total Spent</div>
-                    <div id="total-spent-twd" class="text-lg font-bold">NT$ 0</div>
+            <i class="fas fa-umbrella-beach text-3xl opacity-50"></i>
+        </div>
+        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20">
+            <div class="flex justify-between items-center text-xs font-bold">
+                <div class="text-center">
+                    <p class="opacity-70">去程 JX302</p>
+                    <p class="text-lg">13:15</p>
                 </div>
-                <div class="bg-white/10 p-4 rounded-3xl backdrop-blur-sm border border-white/10 text-center">
-                    <div class="text-[10px] uppercase opacity-60">Budget Status</div>
-                    <div class="text-lg font-bold">Safe ✅</div>
+                <div class="flex-1 px-4 flex flex-col items-center">
+                    <div class="w-full border-t border-dashed border-white/50 relative">
+                        <i class="fas fa-plane absolute -top-2 left-1/2 -translate-x-1/2 text-[10px]"></i>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <p class="opacity-70">回程 JX313</p>
+                    <p class="text-lg">20:30</p>
                 </div>
             </div>
         </div>
-        <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-sky-400/20 rounded-full blur-3xl"></div>
     </header>
 
-    <main id="app" class="p-5 space-y-8">
-
-        <section id="page-plan" class="page-content space-y-6">
-            <div class="glass-card p-5 shadow-sm flex items-center justify-around border-sky-100">
-                <div class="text-center">
-                    <div class="text-sky-600 font-bold">JX302</div>
-                    <div class="text-[10px] text-slate-400">1/24 Sat</div>
-                </div>
-                <div class="h-px w-20 bg-sky-200 relative">
-                    <i class="fas fa-plane absolute -top-2 left-1/2 -translate-x-1/2 text-sky-400"></i>
-                </div>
-                <div class="text-center">
-                    <div class="text-sky-600 font-bold">JX313</div>
-                    <div class="text-[10px] text-slate-400">1/27 Tue</div>
-                </div>
+    <main id="app" class="px-4">
+        
+        <section id="page-plan" class="page-section">
+            <div class="flex gap-2 mb-6">
+                <button onclick="switchDay(1)" id="d1-btn" class="day-btn flex-1 py-3 rounded-2xl bg-white border border-slate-200 text-sm font-bold day-btn-active">D1</button>
+                <button onclick="switchDay(2)" id="d2-btn" class="day-btn flex-1 py-3 rounded-2xl bg-white border border-slate-200 text-sm font-bold">D2</button>
+                <button onclick="switchDay(3)" id="d3-btn" class="day-btn flex-1 py-3 rounded-2xl bg-white border border-slate-200 text-sm font-bold">D3</button>
+                <button onclick="switchDay(4)" id="d4-btn" class="day-btn flex-1 py-3 rounded-2xl bg-white border border-slate-200 text-sm font-bold">D4</button>
             </div>
-
-            <div class="flex justify-between gap-2 sticky top-4 z-40">
-                <button onclick="setDay(1)" id="d-btn-1" class="day-btn flex-1 py-3 glass-card text-slate-500 font-bold text-sm">D1</button>
-                <button onclick="setDay(2)" id="d-btn-2" class="day-btn flex-1 py-3 glass-card text-slate-500 font-bold text-sm">D2</button>
-                <button onclick="setDay(3)" id="d-btn-3" class="day-btn flex-1 py-3 glass-card text-slate-500 font-bold text-sm">D3</button>
-                <button onclick="setDay(4)" id="d-btn-4" class="day-btn flex-1 py-3 glass-card text-slate-500 font-bold text-sm">D4</button>
-            </div>
-
-            <div id="day-timeline" class="space-y-4">
-                </div>
+            <div id="itinerary-content" class="space-y-4"></div>
+            <button onclick="editPlan()" class="w-full mt-6 py-3 border-2 border-dashed border-sky-200 text-sky-600 rounded-2xl text-xs font-bold bg-sky-50/50">
+                <i class="fas fa-pencil-alt mr-1"></i> 修改本日行程內容
+            </button>
         </section>
 
-        <section id="page-wallet" class="page-content hidden space-y-6">
-            <div class="glass-card p-6 shadow-xl">
-                <div id="calc-display" class="text-right mb-4">
-                    <div id="calc-op" class="text-xs text-slate-400 h-4"></div>
-                    <div id="calc-main" class="text-4xl font-bold text-slate-700">0</div>
-                    <div id="calc-result-twd" class="text-sky-600 font-bold text-sm mt-1">≈ NT$ 0</div>
+        <section id="page-wallet" class="page-section hidden">
+            <div class="bg-white rounded-3xl p-5 card-shadow mb-6">
+                <div class="flex justify-between mb-2 px-1">
+                    <span class="text-[10px] font-bold text-slate-400">JPY TO TWD (0.21)</span>
+                    <button onclick="calcTax()" class="text-[10px] text-orange-500 font-bold">退稅試算 (10%)</button>
                 </div>
-                <div class="grid grid-cols-4 gap-3">
-                    <button class="calc-btn p-4 rounded-2xl font-bold" onclick="calcPress('7')">7</button>
-                    <button class="calc-btn p-4 rounded-2xl font-bold" onclick="calcPress('8')">8</button>
-                    <button class="calc-btn p-4 rounded-2xl font-bold" onclick="calcPress('9')">9</button>
-                    <button class="calc-btn p-4 rounded-2xl font-bold text-orange-500" onclick="calcPress('/')">÷</button>
-                    <button class="calc-btn p-4 rounded-2xl font-bold" onclick="calcPress('4')">4</button>
-                    <button class="calc-btn p-4 rounded-2xl font-bold" onclick="calcPress('5')">5</button>
-                    <button class="calc-btn p-4 rounded-2xl font-bold" onclick="calcPress('6')">6</button>
-                    <button class="calc-btn p-4 rounded-2xl font-bold text-orange-500" onclick="calcPress('*')">×</button>
-                    <button class="calc-btn p-4 rounded-2xl font-bold" onclick="calcPress('1')">1</button>
-                    <button class="calc-btn p-4 rounded-2xl font-bold" onclick="calcPress('2')">2</button>
-                    <button class="calc-btn p-4 rounded-2xl font-bold" onclick="calcPress('3')">3</button>
-                    <button class="calc-btn p-4 rounded-2xl font-bold text-orange-500" onclick="calcPress('-')">-</button>
-                    <button class="calc-btn p-4 rounded-2xl font-bold" onclick="calcPress('0')">0</button>
-                    <button class="calc-btn p-4 rounded-2xl font-bold text-rose-500" onclick="calcClear()">C</button>
-                    <button class="calc-btn p-4 rounded-2xl bg-sky-500 text-white" onclick="calcSolve()">=</button>
-                    <button class="calc-btn p-4 rounded-2xl font-bold text-orange-500" onclick="calcPress('+')">+</button>
+                <div id="calc-display" class="bg-slate-50 p-4 rounded-2xl text-right mb-4">
+                    <div id="calc-exp" class="text-xs text-slate-400 h-4"></div>
+                    <div id="calc-main" class="text-3xl font-bold text-slate-700">0</div>
+                    <div id="calc-twd" class="text-sm text-sky-600 font-bold mt-1">≈ NT$ 0</div>
                 </div>
-                <button onclick="applyTax()" class="w-full mt-4 text-[10px] bg-slate-100 py-2 rounded-xl text-slate-500 font-bold uppercase tracking-widest">Apply 10% Tax Refund</button>
-            </div>
-
-            <div class="glass-card p-6 shadow-sm">
-                <h3 class="text-sm font-bold text-slate-700 mb-4">Spend Analysis</h3>
-                <div class="h-40 w-full flex justify-center">
-                    <canvas id="spendChart"></canvas>
-                </div>
-                <div id="split-result" class="mt-4 p-4 bg-sky-50 rounded-2xl text-[11px] text-sky-700 font-bold text-center">
-                    拆帳中...
+                <div class="grid grid-cols-4 gap-2">
+                    <button class="calc-btn p-4 rounded-xl font-bold" onclick="pressCalc('7')">7</button>
+                    <button class="calc-btn p-4 rounded-xl font-bold" onclick="pressCalc('8')">8</button>
+                    <button class="calc-btn p-4 rounded-xl font-bold" onclick="pressCalc('9')">9</button>
+                    <button class="calc-btn p-4 rounded-xl text-orange-500" onclick="pressCalc('/')">÷</button>
+                    <button class="calc-btn p-4 rounded-xl font-bold" onclick="pressCalc('4')">4</button>
+                    <button class="calc-btn p-4 rounded-xl font-bold" onclick="pressCalc('5')">5</button>
+                    <button class="calc-btn p-4 rounded-xl font-bold" onclick="pressCalc('6')">6</button>
+                    <button class="calc-btn p-4 rounded-xl text-orange-500" onclick="pressCalc('*')">×</button>
+                    <button class="calc-btn p-4 rounded-xl font-bold" onclick="pressCalc('1')">1</button>
+                    <button class="calc-btn p-4 rounded-xl font-bold" onclick="pressCalc('2')">2</button>
+                    <button class="calc-btn p-4 rounded-xl font-bold" onclick="pressCalc('3')">3</button>
+                    <button class="calc-btn p-4 rounded-xl text-orange-500" onclick="pressCalc('-')">-</button>
+                    <button class="calc-btn p-4 rounded-xl font-bold" onclick="pressCalc('0')">0</button>
+                    <button class="calc-btn p-4 rounded-xl text-rose-500" onclick="clearCalc()">C</button>
+                    <button class="calc-btn p-4 rounded-xl bg-sky-500 text-white" onclick="solveCalc()">=</button>
+                    <button class="calc-btn p-4 rounded-xl text-orange-500" onclick="pressCalc('+')">+</button>
                 </div>
             </div>
 
-            <div class="glass-card p-6 shadow-sm space-y-4">
-                <input type="text" id="exp-title" placeholder="Item Name" class="w-full">
+            <div class="bg-white rounded-3xl p-5 card-shadow space-y-3 mb-6">
+                <h3 class="text-sm font-bold border-b pb-2"><i class="fas fa-receipt mr-2 text-sky-500"></i>分帳記帳</h3>
+                <input type="text" id="bill-name" placeholder="品項名稱" class="w-full">
                 <div class="flex gap-2">
-                    <input type="number" id="exp-val" placeholder="JPY Amount" class="flex-1">
-                    <select id="exp-user" class="w-24">
-                        <option value="00">00 付</option>
-                        <option value="小宇">小宇 付</option>
+                    <input type="number" id="bill-amount" placeholder="金額 (JPY)" class="flex-1">
+                    <select id="bill-payer" class="bg-slate-50 w-24">
+                        <option value="00">00</option>
+                        <option value="小宇">小宇</option>
                     </select>
                 </div>
-                <div class="flex items-center gap-2">
-                    <label class="flex-1 bg-slate-100 p-3 rounded-xl text-center text-xs cursor-pointer">
-                        <i class="fas fa-camera mr-1"></i> Receipt
-                        <input type="file" id="exp-img" class="hidden" accept="image/*" onchange="handleImg(this)">
+                <div class="flex gap-2">
+                    <select id="bill-method" class="flex-1 bg-slate-50">
+                        <option value="現金">現金</option>
+                        <option value="信用卡">信用卡</option>
+                    </select>
+                    <label class="flex-1 bg-sky-50 text-sky-600 text-xs py-3 rounded-xl text-center font-bold cursor-pointer border border-sky-100">
+                        <i class="fas fa-camera"></i> 拍收據
+                        <input type="file" id="bill-img" class="hidden" accept="image/*" onchange="compressImg(this)">
                     </label>
-                    <button onclick="saveExp()" class="flex-1 bg-sky-600 text-white p-3 rounded-xl font-bold">Add</button>
                 </div>
-                <div id="img-prev" class="hidden h-16 w-16 rounded-xl border overflow-hidden"></div>
+                <div id="img-preview" class="hidden h-16 w-16 rounded-lg overflow-hidden border"></div>
+                <button onclick="saveBill()" class="w-full py-3 bg-sky-600 text-white rounded-2xl font-bold shadow-md">儲存帳目</button>
             </div>
-
-            <div id="exp-list" class="space-y-3 pb-10"></div>
+            
+            <div id="split-summary" class="bg-amber-50 p-4 rounded-2xl text-[11px] text-amber-700 font-bold text-center mb-4"></div>
+            <div id="bill-list" class="space-y-3 pb-6"></div>
         </section>
 
-        <section id="page-lists" class="page-content hidden space-y-8">
-            <div id="list-container">
+        <section id="page-lists" class="page-section hidden">
+            <div class="space-y-8">
+                <div id="cat-pre">
+                    <h3 class="text-xs font-bold text-sky-600 mb-3 tracking-widest uppercase border-l-4 border-sky-500 pl-2">行前準備</h3>
+                    <div class="list-container bg-white rounded-2xl p-4 card-shadow space-y-3"></div>
+                    <div class="mt-3 flex gap-2">
+                        <input type="text" id="input-pre" placeholder="新增事項..." class="flex-1 text-sm">
+                        <button onclick="addListItem('pre')" class="bg-sky-500 text-white w-10 h-10 rounded-xl"><i class="fas fa-plus"></i></button>
+                    </div>
                 </div>
-            <div class="glass-card p-6 shadow-sm">
-                <h3 class="text-xs font-bold text-slate-400 mb-4 uppercase">New Item</h3>
-                <div class="flex gap-2">
-                    <select id="new-item-type" class="text-xs">
-                        <option value="pre">行前</option>
-                        <option value="buy">必買</option>
-                        <option value="eat">必吃</option>
-                    </select>
-                    <input type="text" id="new-item-text" placeholder="..." class="flex-1 text-sm">
-                    <button onclick="addNewItem()" class="bg-sky-500 text-white w-12 rounded-xl"><i class="fas fa-plus"></i></button>
+                <div id="cat-buy">
+                    <h3 class="text-xs font-bold text-amber-600 mb-3 tracking-widest uppercase border-l-4 border-amber-500 pl-2">必買清單</h3>
+                    <div class="list-container bg-white rounded-2xl p-4 card-shadow space-y-3"></div>
+                    <div class="mt-3 flex gap-2">
+                        <input type="text" id="input-buy" placeholder="新增物品..." class="flex-1 text-sm">
+                        <button onclick="addListItem('buy')" class="bg-amber-500 text-white w-10 h-10 rounded-xl"><i class="fas fa-plus"></i></button>
+                    </div>
                 </div>
-            </div>
-        </section>
-
-        <section id="page-info" class="page-content hidden space-y-6">
-            <div class="glass-card p-6">
-                <h3 class="text-sm font-bold text-slate-700 mb-4 flex justify-between items-center">
-                    <span>Personal Memo</span>
-                    <i class="fas fa-save text-sky-400" onclick="saveMemo()"></i>
-                </h3>
-                <textarea id="memo-box" rows="8" class="w-full bg-slate-50 border-0 p-4 text-sm" placeholder="Type notes here..."></textarea>
-            </div>
-
-            <div id="hotel-cards" class="space-y-4"></div>
-
-            <div class="glass-card p-6 border-dashed border-2 border-slate-200 bg-transparent">
-                <h3 class="text-[10px] font-bold text-slate-400 mb-2 uppercase">System Settings</h3>
-                <div class="grid grid-cols-2 gap-2">
-                    <button onclick="exportData()" class="text-xs bg-white p-3 rounded-xl shadow-sm border font-bold text-slate-600"><i class="fas fa-file-export mr-1"></i> Export JSON</button>
-                    <button onclick="importData()" class="text-xs bg-white p-3 rounded-xl shadow-sm border font-bold text-slate-600"><i class="fas fa-file-import mr-1"></i> Import JSON</button>
+                <div id="cat-eat">
+                    <h3 class="text-xs font-bold text-rose-500 mb-3 tracking-widest uppercase border-l-4 border-rose-500 pl-2">必吃美食</h3>
+                    <div class="list-container bg-white rounded-2xl p-4 card-shadow space-y-3"></div>
+                    <div class="mt-3 flex gap-2">
+                        <input type="text" id="input-eat" placeholder="新增美食..." class="flex-1 text-sm">
+                        <button onclick="addListItem('eat')" class="bg-rose-500 text-white w-10 h-10 rounded-xl"><i class="fas fa-plus"></i></button>
+                    </div>
                 </div>
             </div>
         </section>
 
+        <section id="page-info" class="page-section hidden">
+            <div class="bg-white rounded-3xl p-5 card-shadow mb-8">
+                <h3 class="text-sm font-bold text-slate-700 mb-4"><i class="fas fa-language mr-2"></i>即時翻譯與語音</h3>
+                <textarea id="trans-input" placeholder="輸入中文..." class="w-full h-20 bg-slate-50 border-0 mb-3 text-sm"></textarea>
+                <div class="grid grid-cols-2 gap-2 mb-4">
+                    <button onclick="goTranslate('ja')" class="bg-sky-600 text-white py-3 rounded-xl text-xs font-bold">中 → 日 翻譯</button>
+                    <button onclick="ttsJapanese()" class="bg-white text-sky-600 border border-sky-100 py-3 rounded-xl text-xs font-bold">日文語音朗讀</button>
+                </div>
+                <div class="text-[10px] text-slate-400 italic">常用：免稅是在哪裡？(免税はどこですか？)</div>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-sm font-bold text-slate-700 mb-3">個人備忘錄</h3>
+                <textarea id="memo-note" oninput="saveMemo()" placeholder="條列式筆記..." rows="5" class="w-full bg-white rounded-2xl p-4 card-shadow border-0 text-sm"></textarea>
+            </div>
+
+            <h3 class="text-sm font-bold text-slate-700 mb-4">飯店資訊</h3>
+            <div id="hotel-info-list" class="space-y-6"></div>
+        </section>
     </main>
 
-    <nav class="fixed bottom-6 left-5 right-5 h-20 glass-card shadow-2xl z-50 flex justify-around items-center px-4">
-        <button onclick="tab('plan', this)" class="nav-btn nav-active flex flex-col items-center">
-            <i class="fas fa-compass text-xl"></i><span class="text-[9px] font-bold mt-1">PLAN</span>
-        </button>
-        <button onclick="tab('wallet', this)" class="nav-btn text-slate-400 flex flex-col items-center">
-            <i class="fas fa-chart-pie text-xl"></i><span class="text-[9px] font-bold mt-1">WALLET</span>
-        </button>
-        <button onclick="tab('lists', this)" class="nav-btn text-slate-400 flex flex-col items-center">
-            <i class="fas fa-check-double text-xl"></i><span class="text-[9px] font-bold mt-1">LISTS</span>
-        </button>
-        <button onclick="tab('info', this)" class="nav-btn text-slate-400 flex flex-col items-center">
-            <i class="fas fa-database text-xl"></i><span class="text-[9px] font-bold mt-1">INFO</span>
-        </button>
+    <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t flex justify-around p-3 pb-8 z-50">
+        <button class="nav-btn nav-active" onclick="tab('plan', this)"><i class="fas fa-map-marked-alt text-xl mb-1"></i><p class="text-[10px]">PLAN</p></button>
+        <button class="nav-btn text-slate-400" onclick="tab('wallet', this)"><i class="fas fa-wallet text-xl mb-1"></i><p class="text-[10px]">WALLET</p></button>
+        <button class="nav-btn text-slate-400" onclick="tab('lists', this)"><i class="fas fa-tasks text-xl mb-1"></i><p class="text-[10px]">LISTS</p></button>
+        <button class="nav-btn text-slate-400" onclick="tab('info', this)"><i class="fas fa-info-circle text-xl mb-1"></i><p class="text-[10px]">INFO</p></button>
     </nav>
 
     <script>
-        // --- Core Config ---
         const RATE = 0.21;
-        const HOTEL_DB = [
-            { name: "JR九州飯店 Blossom那霸", time: "15:00 In / 11:00 Out", icon: "fa-city", parking: "1,500 JPY", link: "JR Kyushu Hotel Blossom Naha" },
-            { name: "沖繩蒙特利 Spa 度假酒店", time: "14:00 In / 11:00 Out", icon: "fa-umbrella-beach", parking: "500 JPY", link: "Hotel Monterey Okinawa Spa and Resort" },
-            { name: "星野集團 BEB5 沖繩瀨良垣", time: "15:00 In / 11:00 Out", icon: "fa-swimming-pool", parking: "Free", link: "Hoshino Resorts BEB5 Okinawa Seragaki" }
+        let activeDay = 1;
+        let tempImg = "";
+
+        const HOTELS = [
+            { name: "JR九州飯店 Blossom那霸", img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=300", info: "D1", parking: "1,500 JPY/晚", time: "15:00 In / 11:00 Out" },
+            { name: "沖繩蒙特利 Spa 度假酒店", img: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=300", info: "D2", parking: "500 JPY/晚", time: "14:00 In / 11:00 Out" },
+            { name: "星野集團 BEB5 沖繩瀨良垣", img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=300", info: "D3", parking: "免費停車", time: "15:00 In / 11:00 Out" }
         ];
 
-        // --- State Management ---
-        let currentDay = 1;
-        let expenses = JSON.parse(localStorage.getItem('ok_exp_v5')) || [];
-        let tripLists = JSON.parse(localStorage.getItem('ok_list_v5')) || {
-            pre: [{t: "護照/日文譯本", d: true}, {t: "行動電源", d: false}],
-            buy: [{t: "吉伊卡哇吊飾", d: false}, {t: "風獅爺磁鐵", d: false}],
-            eat: [{t: "生黑糖拿鐵", d: false}, {t: "蝦蝦飯", d: false}]
+        const defaultPlan = {
+            1: [{ t: "15:45", s: "抵達機場取車", l: "Naha Airport" }, { t: "18:30", s: "EIBUN/小やじ", l: "EIBUN" }],
+            2: [{ t: "11:00", s: "波上宮參拜", l: "Naminoue Shrine" }, { t: "12:30", s: "Cerrado Coffee", l: "Okinawa Cerrado Coffee" }, { t: "13:00", s: "A&W 牧港店", l: "A&W Makiminato" }, { t: "14:00", s: "PARCO CITY", l: "PARCO CITY" }, { t: "17:00", s: "北谷日落", l: "Chatan Park" }],
+            3: [{ t: "11:00", s: "美麗海水族館", l: "Churaumi" }, { t: "14:00", s: "Shinmei Coffee", l: "Shinmei Coffee" }, { t: "16:30", s: "古宇利蝦蝦飯", l: "Kouri Shrimp" }, { t: "18:30", s: "琉球之牛", l: "Ryukyu no Ushi" }],
+            4: [{ t: "10:30", s: "永旺夢樂城", l: "Aeon Mall Rycom" }, { t: "12:00", s: "美食街午餐", l: "Rycom Food Court" }, { t: "14:45", s: "瀨長島看飛機", l: "Umikaji Terrace" }, { t: "16:30", s: "還車結束", l: "Naha Airport" }]
         };
-        let plans = JSON.parse(localStorage.getItem('ok_plan_v5')) || {
-            1: [{t: "15:45", s: "那霸機場取車", l: "Naha Airport"}, {t: "18:30", s: "EIBUN 沖繩麵", l: "Okinawa Soba EIBUN"}],
-            2: [{t: "12:30", s: "Cerrado Coffee ☕", l: "Okinawa Cerrado Coffee"}, {t: "14:00", s: "PARCO CITY", l: "PARCO CITY"}, {t: "17:00", s: "北谷公園看日落", l: "Chatan Park Sunset Beach"}],
-            3: [{t: "11:00", s: "美麗海水族館", l: "Churaumi Aquarium"}, {t: "14:00", s: "Shinmei Coffee 🥤", l: "Shinmei Coffee"}, {t: "18:30", s: "琉球之牛", l: "Ryukyu no Ushi"}],
-            4: [{t: "12:00", s: "永旺夢樂城午餐", l: "Aeon Mall Rycom"}, {t: "15:30", s: "瀨長島看飛機", l: "Umikaji Terrace"}]
-        };
-        let tempImg = "";
-        let myChart = null;
 
-        // --- Navigation ---
+        let plans = JSON.parse(localStorage.getItem('ok_plan_v7')) || defaultPlan;
+        let bills = JSON.parse(localStorage.getItem('ok_bill_v7')) || [];
+        let lists = JSON.parse(localStorage.getItem('ok_list_v7')) || { pre: [], buy: [], eat: [] };
+        let memo = localStorage.getItem('ok_memo_v7') || "";
+
         function tab(id, el) {
-            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('.page-section').forEach(p => p.classList.add('hidden'));
             document.getElementById(`page-${id}`).classList.remove('hidden');
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.replace('nav-active', 'text-slate-400'));
             el.classList.replace('text-slate-400', 'nav-active');
             window.scrollTo(0,0);
-            if(id === 'wallet') updateWalletUI();
         }
 
-        function setDay(d) {
-            currentDay = d;
-            document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('day-active'));
-            document.getElementById(`d-btn-${d}`).classList.add('day-active');
+        // PLAN
+        function switchDay(d) {
+            activeDay = d;
+            document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('day-btn-active'));
+            document.getElementById(`d${d}-btn`).classList.add('day-btn-active');
             renderPlan();
         }
-
-        // --- Logic: Plan ---
         function renderPlan() {
-            const box = document.getElementById('day-timeline');
-            box.innerHTML = plans[currentDay].map(item => `
-                <div class="glass-card p-5 shadow-sm border-l-4 border-sky-400 flex justify-between items-center animate-fadeIn">
-                    <div class="flex items-center gap-4">
-                        <div class="text-sky-500 font-bold text-sm">${item.t}</div>
-                        <div>
-                            <div class="text-sm font-bold">${item.s}</div>
-                            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.l)}" class="text-[10px] text-slate-400 underline">Open Maps</a>
-                        </div>
-                    </div>
+            document.getElementById('itinerary-content').innerHTML = plans[activeDay].map(i => `
+                <div class="bg-white p-4 rounded-2xl shadow-sm flex justify-between items-center">
+                    <div class="flex gap-4"><span class="text-sky-500 font-bold text-xs">${i.t}</span>
+                    <span class="text-sm font-bold text-slate-700">${i.s}</span></div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(i.l)}" target="_blank" class="text-sky-300"><i class="fas fa-location-arrow"></i></a>
                 </div>
             `).join('');
         }
-
-        // --- Logic: Wallet & Chart ---
-        let calcVal = "0";
-        function calcPress(v) { 
-            if(calcVal === "0") calcVal = v; 
-            else calcVal += v; 
-            updateCalc(); 
+        function editPlan() {
+            const res = prompt("編輯行程內容 (JSON格式):", JSON.stringify(plans[activeDay]));
+            if(res) { plans[activeDay] = JSON.parse(res); localStorage.setItem('ok_plan_v7', JSON.stringify(plans)); renderPlan(); }
         }
-        function calcClear() { calcVal = "0"; updateCalc(); }
-        function calcSolve() {
-            try { calcVal = String(eval(calcVal)); } catch { calcVal = "Error"; }
+
+        // WALLET & CALC
+        let calcVal = "0";
+        function pressCalc(v) { calcVal === "0" ? calcVal = v : calcVal += v; updateCalc(); }
+        function clearCalc() { calcVal = "0"; document.getElementById('calc-exp').innerText = ""; updateCalc(); }
+        function solveCalc() {
+            try { document.getElementById('calc-exp').innerText = calcVal + " ="; calcVal = String(eval(calcVal)); } catch { calcVal = "Error"; }
             updateCalc();
         }
+        function calcTax() { calcVal = String(Math.round(eval(calcVal) / 1.1)); updateCalc(); }
         function updateCalc() {
             document.getElementById('calc-main').innerText = calcVal;
             const res = isNaN(eval(calcVal)) ? 0 : eval(calcVal);
-            document.getElementById('calc-result-twd').innerText = `≈ NT$ ${Math.round(res * RATE)}`;
+            document.getElementById('calc-twd').innerText = `≈ NT$ ${Math.round(res * RATE)}`;
         }
-        function applyTax() { calcVal = String(Math.round(eval(calcVal) / 1.1)); updateCalc(); }
 
-        function handleImg(input) {
+        function compressImg(input) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 const img = new Image();
@@ -281,184 +257,89 @@
                     canvas.width = 150; canvas.height = 150;
                     ctx.drawImage(img, 0, 0, 150, 150);
                     tempImg = canvas.toDataURL('image/jpeg', 0.6);
-                    document.getElementById('img-prev').innerHTML = `<img src="${tempImg}" class="w-full h-full object-cover">`;
-                    document.getElementById('img-prev').classList.remove('hidden');
+                    document.getElementById('img-preview').innerHTML = `<img src="${tempImg}" class="w-full h-full object-cover">`;
+                    document.getElementById('img-preview').classList.remove('hidden');
                 };
                 img.src = e.target.result;
             };
             reader.readAsDataURL(input.files[0]);
         }
 
-        function saveExp() {
-            const title = document.getElementById('exp-title').value;
-            const val = document.getElementById('exp-val').value;
-            const user = document.getElementById('exp-user').value;
-            if(!title || !val) return;
-            expenses.unshift({ id: Date.now(), t: title, v: parseFloat(val), u: user, i: tempImg, d: new Date().toLocaleTimeString() });
-            localStorage.setItem('ok_exp_v5', JSON.stringify(expenses));
-            document.getElementById('exp-title').value = ""; document.getElementById('exp-val').value = "";
-            document.getElementById('img-prev').classList.add('hidden'); tempImg = "";
-            updateWalletUI();
+        function saveBill() {
+            const n = document.getElementById('bill-name').value;
+            const a = document.getElementById('bill-amount').value;
+            const p = document.getElementById('bill-payer').value;
+            const m = document.getElementById('bill-method').value;
+            if(!n || !a) return;
+            bills.unshift({ id: Date.now(), n, a: parseFloat(a), p, m, img: tempImg });
+            localStorage.setItem('ok_bill_v7', JSON.stringify(bills));
+            document.getElementById('bill-name').value = ""; document.getElementById('bill-amount').value = "";
+            document.getElementById('img-preview').classList.add('hidden'); tempImg = "";
+            renderBills();
         }
 
-        function updateWalletUI() {
-            renderExpenses();
-            updateChart();
-            calculateSplit();
-            const total = expenses.reduce((s, e) => s + (e.v * RATE), 0);
-            document.getElementById('total-spent-twd').innerText = `NT$ ${Math.round(total).toLocaleString()}`;
-        }
-
-        function renderExpenses() {
-            document.getElementById('exp-list').innerHTML = expenses.map(e => `
-                <div class="glass-card p-4 flex justify-between items-center border-l-4 ${e.u === '00' ? 'border-sky-400' : 'border-rose-400'}">
+        function renderBills() {
+            let sum00 = 0, sumYu = 0;
+            const list = document.getElementById('bill-list');
+            list.innerHTML = bills.map(b => {
+                b.p === '00' ? sum00 += b.a : sumYu += b.a;
+                return `
+                <div class="bg-white p-3 rounded-2xl flex justify-between items-center border-l-4 ${b.p === '00' ? 'border-sky-400' : 'border-rose-400'}">
                     <div class="flex items-center gap-3">
-                        ${e.i ? `<img src="${e.i}" class="w-10 h-10 rounded-lg">` : `<div class="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center text-[8px] text-slate-400">No Photo</div>`}
-                        <div>
-                            <div class="text-xs font-bold">${e.t}</div>
-                            <div class="text-[9px] text-slate-400">${e.u} 付 | ${e.d}</div>
+                        ${b.img ? `<img src="${b.img}" class="w-10 h-10 rounded">` : `<div class="w-10 h-10 bg-slate-100 rounded"></div>`}
+                        <div><div class="text-xs font-bold">${b.n}</div><div class="text-[9px] text-slate-400">${b.p} 付 | ${b.m}</div></div>
+                    </div>
+                    <div class="text-right"><div class="text-xs font-bold">¥${b.a}</div><button onclick="delBill(${b.id})" class="text-[10px] text-slate-300">刪除</button></div>
+                </div>`;
+            }).join('');
+            const diff = Math.round(Math.abs(sum00 - sumYu) / 2);
+            document.getElementById('split-summary').innerText = sum00 > sumYu ? `小宇 應給 00 約 ¥${diff}` : `00 應給 小宇 約 ¥${diff}`;
+        }
+        function delBill(id) { bills = bills.filter(x => x.id !== id); localStorage.setItem('ok_bill_v7', JSON.stringify(bills)); renderBills(); }
+
+        // LISTS
+        function renderLists() {
+            ['pre', 'buy', 'eat'].forEach(cat => {
+                const container = document.querySelector(`#cat-${cat} .list-container`);
+                container.innerHTML = lists[cat].map((it, i) => `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3" onclick="toggleItem('${cat}', ${i})">
+                            <i class="${it.d ? 'fas fa-check-circle text-sky-500' : 'far fa-circle text-slate-200'}"></i>
+                            <span class="text-sm ${it.d ? 'line-through-text' : ''}">${it.t}</span>
                         </div>
+                        <i class="fas fa-times text-slate-200" onclick="delItem('${cat}', ${i})"></i>
                     </div>
-                    <div class="text-right">
-                        <div class="text-xs font-bold">¥${e.v.toLocaleString()}</div>
-                        <button onclick="delExp(${e.id})" class="text-[9px] text-rose-300">Delete</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function delExp(id) {
-            expenses = expenses.filter(x => x.id !== id);
-            localStorage.setItem('ok_exp_v5', JSON.stringify(expenses));
-            updateWalletUI();
-        }
-
-        function updateChart() {
-            const data00 = expenses.filter(e => e.u === '00').reduce((s, e) => s + e.v, 0);
-            const dataYu = expenses.filter(e => e.u === '小宇').reduce((s, e) => s + e.v, 0);
-            
-            if(myChart) myChart.destroy();
-            const ctx = document.getElementById('spendChart').getContext('2d');
-            myChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['00', '小宇'],
-                    datasets: [{ data: [data00, dataYu], backgroundColor: ['#38bdf8', '#fb7185'], borderWeight: 0 }]
-                },
-                options: { plugins: { legend: { display: false } }, cutout: '70%' }
+                `).join('');
             });
         }
-
-        function calculateSplit() {
-            const data00 = expenses.filter(e => e.u === '00').reduce((s, e) => s + e.v, 0);
-            const dataYu = expenses.filter(e => e.u === '小宇').reduce((s, e) => s + e.v, 0);
-            const half = (data00 + dataYu) / 2;
-            const diff = Math.round(Math.abs(data00 - half));
-            const msg = data00 > dataYu ? `小宇 欠 00 約 ¥${diff.toLocaleString()}` : `00 欠 小宇 約 ¥${diff.toLocaleString()}`;
-            document.getElementById('split-result').innerText = (data00 + dataYu === 0) ? "尚無帳目" : msg;
+        function addListItem(cat) {
+            const val = document.getElementById(`input-${cat}`).value;
+            if(!val) return;
+            lists[cat].push({ t: val, d: false });
+            document.getElementById(`input-${cat}`).value = "";
+            localStorage.setItem('ok_list_v7', JSON.stringify(lists));
+            renderLists();
         }
+        function toggleItem(cat, i) { lists[cat][i].d = !lists[cat][i].d; localStorage.setItem('ok_list_v7', JSON.stringify(lists)); renderLists(); }
+        function delItem(cat, i) { lists[cat].splice(i, 1); localStorage.setItem('ok_list_v7', JSON.stringify(lists)); renderLists(); }
 
-        // --- Logic: Lists ---
-        function renderLists() {
-            const container = document.getElementById('list-container');
-            container.innerHTML = "";
-            for (let [type, items] of Object.entries(tripLists)) {
-                const label = type === 'pre' ? '行前準備' : type === 'buy' ? '必買清單' : '必吃美食';
-                const color = type === 'pre' ? 'sky' : type === 'buy' ? 'amber' : 'rose';
-                const html = `
-                    <div class="mb-6">
-                        <h3 class="text-xs font-bold text-${color}-500 mb-3 uppercase tracking-widest">${label}</h3>
-                        <div class="space-y-2">
-                            ${items.map((it, i) => `
-                                <div class="flex items-center justify-between glass-card p-3 shadow-sm" onclick="toggleItem('${type}', ${i})">
-                                    <div class="flex items-center gap-3">
-                                        <i class="${it.d ? 'fas fa-check-circle text-emerald-400' : 'far fa-circle text-slate-300'}"></i>
-                                        <span class="text-sm ${it.d ? 'line-through text-slate-300' : ''}">${it.t}</span>
-                                    </div>
-                                    <i class="fas fa-trash text-[10px] text-slate-200" onclick="delItem('${type}', ${i})"></i>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-                container.innerHTML += html;
-            }
-        }
-
-        function toggleItem(type, i) { tripLists[type][i].d = !tripLists[type][i].d; saveLists(); }
-        function delItem(type, i) { tripLists[type].splice(i, 1); saveLists(); }
-        function addNewItem() {
-            const t = document.getElementById('new-item-type').value;
-            const txt = document.getElementById('new-item-text').value;
-            if(!txt) return;
-            tripLists[t].push({t: txt, d: false});
-            document.getElementById('new-item-text').value = "";
-            saveLists();
-        }
-        function saveLists() { localStorage.setItem('ok_list_v5', JSON.stringify(tripLists)); renderLists(); }
-
-        // --- Logic: Info ---
+        // INFO
+        function saveMemo() { localStorage.setItem('ok_memo_v7', document.getElementById('memo-note').value); }
+        function goTranslate(lang) { window.open(`https://translate.google.com/?sl=zh-CN&tl=${lang}&text=${encodeURIComponent(document.getElementById('trans-input').value)}&op=translate`, '_blank'); }
+        function ttsJapanese() { const msg = new SpeechSynthesisUtterance(document.getElementById('trans-input').value); msg.lang = 'ja-JP'; window.speechSynthesis.speak(msg); }
         function renderHotels() {
-            document.getElementById('hotel-cards').innerHTML = HOTEL_DB.map(h => `
-                <div class="glass-card p-5 flex gap-4 items-center">
-                    <div class="w-12 h-12 rounded-2xl bg-sky-100 text-sky-500 flex items-center justify-center text-xl">
-                        <i class="fas ${h.icon}"></i>
-                    </div>
-                    <div class="flex-1">
-                        <h4 class="text-xs font-bold">${h.name}</h4>
-                        <div class="text-[9px] text-slate-400 mt-1">${h.time} | Parking: ${h.parking}</div>
-                    </div>
-                    <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.link)}" class="bg-white p-2 rounded-lg shadow-sm border"><i class="fas fa-location-arrow text-sky-400"></i></a>
+            document.getElementById('hotel-info-list').innerHTML = HOTELS.map(h => `
+                <div class="bg-white rounded-3xl overflow-hidden shadow-sm">
+                    <img src="${h.img}" class="w-full h-32 object-cover">
+                    <div class="p-4"><div class="flex justify-between font-bold mb-2"><span>${h.name}</span><span class="text-sky-500">${h.info}</span></div>
+                    <div class="text-[11px] text-slate-400">🅿️ ${h.parking} | 🕒 ${h.time}</div></div>
                 </div>
             `).join('');
         }
 
-        function saveMemo() { localStorage.setItem('ok_memo_v5', document.getElementById('memo-box').value); alert("Memo Saved!"); }
-
-        function exportData() {
-            const data = { expenses, tripLists, plans, memo: document.getElementById('memo-box').value };
-            const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `okinawa_backup_${new Date().toLocaleDateString()}.json`;
-            a.click();
-        }
-
-        function importData() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.onchange = e => {
-                const reader = new FileReader();
-                reader.onload = ev => {
-                    const data = JSON.parse(ev.target.result);
-                    if(confirm("確定匯入並覆蓋現有資料？")) {
-                        expenses = data.expenses; tripLists = data.tripLists; plans = data.plans;
-                        localStorage.setItem('ok_exp_v5', JSON.stringify(expenses));
-                        localStorage.setItem('ok_list_v5', JSON.stringify(tripLists));
-                        localStorage.setItem('ok_plan_v5', JSON.stringify(plans));
-                        location.reload();
-                    }
-                };
-                reader.readAsText(e.target.files[0]);
-            };
-            input.click();
-        }
-
-        // --- Initialization ---
         window.onload = () => {
-            setDay(1);
-            renderLists();
-            renderHotels();
-            updateWalletUI();
-            document.getElementById('memo-box').value = localStorage.getItem('ok_memo_v5') || "";
-            
-            const target = new Date("2026/01/24 13:15");
-            setInterval(() => {
-                const diff = target - new Date();
-                const d = Math.floor(diff / 86400000);
-                const h = Math.floor((diff % 86400000) / 3600000);
-                document.getElementById('countdown-text').innerText = diff > 0 ? `🚀 距離出發還有 ${d}天 ${h}小時` : "🎉 享受沖繩假期中！";
-            }, 1000);
+            switchDay(1); renderBills(); renderLists(); renderHotels();
+            document.getElementById('memo-note').value = memo;
         };
     </script>
 </body>
