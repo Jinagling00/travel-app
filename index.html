@@ -182,170 +182,244 @@
 
 
     <script>
-        const SUPABASE_URL = 'https://avkkgiuqkipmzjeudscu.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_jMgxCh5redMUsm4rMLifXQ_iL6JEpDE';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        
-        const RATE = 0.21;
-        let activeDay = 1;
-        let tempImg = "";
+    // --- 1. Supabase 初始化設定 ---
+    const SUPABASE_URL = 'https://avkkgiuqkipmzjeudscu.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_jMgxCh5redMUsm4rMLifXQ_iL6JEpDE';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const HOTELS = [
-            { name: "JR九州飯店 Blossom那霸", img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=300", info: "D1", parking: "1,500 JPY/晚", time: "15:00 In / 11:00 Out" },
-            { name: "沖繩蒙特利 Spa 度假酒店", img: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=300", info: "D2", parking: "500 JPY/晚", time: "14:00 In / 11:00 Out" },
-            { name: "星野集團 BEB5 沖繩瀨良垣", img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=300", info: "D3", parking: "免費停車", time: "15:00 In / 11:00 Out" }
-        ];
+    // --- 2. 基礎資料與變數 ---
+    const RATE = 0.21;
+    let activeDay = 1;
+    let tempImg = "";
 
-        const defaultPlan = {
-            1: [{ t: "15:45", s: "抵達機場取車", l: "Naha Airport" }, { t: "18:30", s: "EIBUN/小やじ", l: "EIBUN" }],
-            2: [{ t: "11:00", s: "波上宮參拜", l: "Naminoue Shrine" }, { t: "12:30", s: "Cerrado Coffee", l: "Okinawa Cerrado Coffee" }, { t: "13:00", s: "A&W 牧港店", l: "A&W Makiminato" }, { t: "14:00", s: "PARCO CITY", l: "PARCO CITY" }, { t: "17:00", s: "北谷日落", l: "Chatan Park" }],
-            3: [{ t: "11:00", s: "美麗海水族館", l: "Churaumi" }, { t: "14:00", s: "Shinmei Coffee", l: "Shinmei Coffee" }, { t: "16:30", s: "古宇利蝦蝦飯", l: "Kouri Shrimp" }, { t: "18:30", s: "琉球之牛", l: "Ryukyu no Ushi" }],
-            4: [{ t: "10:30", s: "永旺夢樂城", l: "Aeon Mall Rycom" }, { t: "12:00", s: "美食街午餐", l: "Rycom Food Court" }, { t: "14:45", s: "瀨長島看飛機", l: "Umikaji Terrace" }, { t: "16:30", s: "還車結束", l: "Naha Airport" }]
-        };
+    const HOTELS = [
+        { name: "JR九州飯店 Blossom那霸", img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=300", info: "D1", parking: "1,500 JPY/晚", time: "15:00 In / 11:00 Out" },
+        { name: "沖繩蒙特利 Spa 度假酒店", img: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=300", info: "D2", parking: "500 JPY/晚", time: "14:00 In / 11:00 Out" },
+        { name: "星野集團 BEB5 沖繩瀨良垣", img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=300", info: "D3", parking: "免費停車", time: "15:00 In / 11:00 Out" }
+    ];
 
-        let plans = JSON.parse(localStorage.getItem('ok_plan_v7')) || defaultPlan;
-        let bills = JSON.parse(localStorage.getItem('ok_bill_v7')) || [];
-        let lists = JSON.parse(localStorage.getItem('ok_list_v7')) || { pre: [], buy: [], eat: [] };
-        let memo = localStorage.getItem('ok_memo_v7') || "";
+    const defaultPlan = {
+        1: [{ t: "15:45", s: "抵達機場取車", l: "Naha Airport" }, { t: "18:30", s: "EIBUN/小やじ", l: "EIBUN" }],
+        2: [{ t: "11:00", s: "波上宮參拜", l: "Naminoue Shrine" }, { t: "12:30", s: "Cerrado Coffee", l: "Okinawa Cerrado Coffee" }, { t: "13:00", s: "A&W 牧港店", l: "A&W Makiminato" }, { t: "14:00", s: "PARCO CITY", l: "PARCO CITY" }, { t: "17:00", s: "北谷日落", l: "Chatan Park" }],
+        3: [{ t: "11:00", s: "美麗海水族館", l: "Churaumi" }, { t: "14:00", s: "Shinmei Coffee", l: "Shinmei Coffee" }, { t: "16:30", s: "古宇利蝦蝦飯", l: "Kouri Shrimp" }, { t: "18:30", s: "琉球之牛", l: "Ryukyu no Ushi" }],
+        4: [{ t: "10:30", s: "永旺夢樂城", l: "Aeon Mall Rycom" }, { t: "12:00", s: "美食街午餐", l: "Rycom Food Court" }, { t: "14:45", s: "瀨長島看飛機", l: "Umikaji Terrace" }, { t: "16:30", s: "還車結束", l: "Naha Airport" }]
+    };
 
-        function tab(id, el) {
-            document.querySelectorAll('.page-section').forEach(p => p.classList.add('hidden'));
-            document.getElementById(`page-${id}`).classList.remove('hidden');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.replace('nav-active', 'text-slate-400'));
-            el.classList.replace('text-slate-400', 'nav-active');
-            window.scrollTo(0,0);
-        }
+    // 本地緩存變數（初始先從 LocalStorage 拿，隨後會被雲端覆蓋）
+    let plans = JSON.parse(localStorage.getItem('ok_plan_v7')) || defaultPlan;
+    let bills = [];
+    let lists = { pre: [], buy: [], eat: [] };
+    let memoText = "";
 
-        // PLAN
-        function switchDay(d) {
-            activeDay = d;
-            document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('day-btn-active'));
-            document.getElementById(`d${d}-btn`).classList.add('day-btn-active');
-            renderPlan();
-        }
-        function renderPlan() {
-            document.getElementById('itinerary-content').innerHTML = plans[activeDay].map(i => `
-                <div class="bg-white p-4 rounded-2xl shadow-sm flex justify-between items-center">
-                    <div class="flex gap-4"><span class="text-sky-500 font-bold text-xs">${i.t}</span>
-                    <span class="text-sm font-bold text-slate-700">${i.s}</span></div>
-                    <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(i.l)}" target="_blank" class="text-sky-300"><i class="fas fa-location-arrow"></i></a>
-                </div>
-            `).join('');
-        }
-        function editPlan() {
-            const res = prompt("編輯行程內容 (JSON格式):", JSON.stringify(plans[activeDay]));
-            if(res) { plans[activeDay] = JSON.parse(res); localStorage.setItem('ok_plan_v7', JSON.stringify(plans)); renderPlan(); }
-        }
+    // --- 3. 雲端同步核心邏輯 (Fetch & Realtime) ---
 
-        // WALLET & CALC
-        let calcVal = "0";
-        function pressCalc(v) { calcVal === "0" ? calcVal = v : calcVal += v; updateCalc(); }
-        function clearCalc() { calcVal = "0"; document.getElementById('calc-exp').innerText = ""; updateCalc(); }
-        function solveCalc() {
-            try { document.getElementById('calc-exp').innerText = calcVal + " ="; calcVal = String(eval(calcVal)); } catch { calcVal = "Error"; }
-            updateCalc();
-        }
-        function calcTax() { calcVal = String(Math.round(eval(calcVal) / 1.1)); updateCalc(); }
-        function updateCalc() {
-            document.getElementById('calc-main').innerText = calcVal;
-            const res = isNaN(eval(calcVal)) ? 0 : eval(calcVal);
-            document.getElementById('calc-twd').innerText = `≈ NT$ ${Math.round(res * RATE)}`;
-        }
+    // 從雲端抓取所有資料
+    async function fetchAllData() {
+        // 抓帳目
+        const { data: bData } = await _supabase.from('travel_bills').select('*').order('created_at', { ascending: false });
+        if (bData) { bills = bData; renderBills(); }
 
-        function compressImg(input) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = 150; canvas.height = 150;
-                    ctx.drawImage(img, 0, 0, 150, 150);
-                    tempImg = canvas.toDataURL('image/jpeg', 0.6);
-                    document.getElementById('img-preview').innerHTML = `<img src="${tempImg}" class="w-full h-full object-cover">`;
-                    document.getElementById('img-preview').classList.remove('hidden');
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-
-        function saveBill() {
-            const n = document.getElementById('bill-name').value;
-            const a = document.getElementById('bill-amount').value;
-            const p = document.getElementById('bill-payer').value;
-            const m = document.getElementById('bill-method').value;
-            if(!n || !a) return;
-            bills.unshift({ id: Date.now(), n, a: parseFloat(a), p, m, img: tempImg });
-            localStorage.setItem('ok_bill_v7', JSON.stringify(bills));
-            document.getElementById('bill-name').value = ""; document.getElementById('bill-amount').value = "";
-            document.getElementById('img-preview').classList.add('hidden'); tempImg = "";
-            renderBills();
-        }
-
-        function renderBills() {
-            let sum00 = 0, sumYu = 0;
-            const list = document.getElementById('bill-list');
-            list.innerHTML = bills.map(b => {
-                b.p === '00' ? sum00 += b.a : sumYu += b.a;
-                return `
-                <div class="bg-white p-3 rounded-2xl flex justify-between items-center border-l-4 ${b.p === '00' ? 'border-sky-400' : 'border-rose-400'}">
-                    <div class="flex items-center gap-3">
-                        ${b.img ? `<img src="${b.img}" class="w-10 h-10 rounded">` : `<div class="w-10 h-10 bg-slate-100 rounded"></div>`}
-                        <div><div class="text-xs font-bold">${b.n}</div><div class="text-[9px] text-slate-400">${b.p} 付 | ${b.m}</div></div>
-                    </div>
-                    <div class="text-right"><div class="text-xs font-bold">¥${b.a}</div><button onclick="delBill(${b.id})" class="text-[10px] text-slate-300">刪除</button></div>
-                </div>`;
-            }).join('');
-            const diff = Math.round(Math.abs(sum00 - sumYu) / 2);
-            document.getElementById('split-summary').innerText = sum00 > sumYu ? `小宇 應給 00 約 ¥${diff}` : `00 應給 小宇 約 ¥${diff}`;
-        }
-        function delBill(id) { bills = bills.filter(x => x.id !== id); localStorage.setItem('ok_bill_v7', JSON.stringify(bills)); renderBills(); }
-
-        // LISTS
-        function renderLists() {
-            ['pre', 'buy', 'eat'].forEach(cat => {
-                const container = document.querySelector(`#cat-${cat} .list-container`);
-                container.innerHTML = lists[cat].map((it, i) => `
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3" onclick="toggleItem('${cat}', ${i})">
-                            <i class="${it.d ? 'fas fa-check-circle text-sky-500' : 'far fa-circle text-slate-200'}"></i>
-                            <span class="text-sm ${it.d ? 'line-through-text' : ''}">${it.t}</span>
-                        </div>
-                        <i class="fas fa-times text-slate-200" onclick="delItem('${cat}', ${i})"></i>
-                    </div>
-                `).join('');
-            });
-        }
-        function addListItem(cat) {
-            const val = document.getElementById(`input-${cat}`).value;
-            if(!val) return;
-            lists[cat].push({ t: val, d: false });
-            document.getElementById(`input-${cat}`).value = "";
-            localStorage.setItem('ok_list_v7', JSON.stringify(lists));
+        // 抓清單
+        const { data: lData } = await _supabase.from('travel_lists').select('*');
+        if (lData) {
+            lists = { pre: [], buy: [], eat: [] };
+            lData.forEach(item => lists[item.category].push(item));
             renderLists();
         }
-        function toggleItem(cat, i) { lists[cat][i].d = !lists[cat][i].d; localStorage.setItem('ok_list_v7', JSON.stringify(lists)); renderLists(); }
-        function delItem(cat, i) { lists[cat].splice(i, 1); localStorage.setItem('ok_list_v7', JSON.stringify(lists)); renderLists(); }
 
-        // INFO
-        function saveMemo() { localStorage.setItem('ok_memo_v7', document.getElementById('memo-note').value); }
-        function goTranslate(lang) { window.open(`https://translate.google.com/?sl=zh-CN&tl=${lang}&text=${encodeURIComponent(document.getElementById('trans-input').value)}&op=translate`, '_blank'); }
-        function ttsJapanese() { const msg = new SpeechSynthesisUtterance(document.getElementById('trans-input').value); msg.lang = 'ja-JP'; window.speechSynthesis.speak(msg); }
-        function renderHotels() {
-            document.getElementById('hotel-info-list').innerHTML = HOTELS.map(h => `
-                <div class="bg-white rounded-3xl overflow-hidden shadow-sm">
-                    <img src="${h.img}" class="w-full h-32 object-cover">
-                    <div class="p-4"><div class="flex justify-between font-bold mb-2"><span>${h.name}</span><span class="text-sky-500">${h.info}</span></div>
-                    <div class="text-[11px] text-slate-400">🅿️ ${h.parking} | 🕒 ${h.time}</div></div>
+        // 抓備忘錄
+        const { data: mData } = await _supabase.from('travel_memos').select('content').limit(1).single();
+        if (mData) { 
+            memoText = mData.content; 
+            document.getElementById('memo-note').value = memoText;
+        }
+    }
+
+    // 開啟即時監聽 (Realtime)
+    function initRealtime() {
+        _supabase
+            .channel('okinawa-sync')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'travel_bills' }, () => fetchAllData())
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'travel_lists' }, () => fetchAllData())
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'travel_memos' }, () => fetchAllData())
+            .subscribe();
+    }
+
+    // --- 4. 功能函數 (UI & Logic) ---
+
+    function tab(id, el) {
+        document.querySelectorAll('.page-section').forEach(p => p.classList.add('hidden'));
+        document.getElementById(`page-${id}`).classList.remove('hidden');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.replace('nav-active', 'text-slate-400'));
+        el.classList.replace('text-slate-400', 'nav-active');
+        window.scrollTo(0,0);
+    }
+
+    // PLAN 行程
+    function switchDay(d) {
+        activeDay = d;
+        document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('day-btn-active'));
+        document.getElementById(`d${d}-btn`).classList.add('day-btn-active');
+        renderPlan();
+    }
+    function renderPlan() {
+        document.getElementById('itinerary-content').innerHTML = plans[activeDay].map(i => `
+            <div class="bg-white p-4 rounded-2xl shadow-sm flex justify-between items-center">
+                <div class="flex gap-4"><span class="text-sky-500 font-bold text-xs">${i.t}</span>
+                <span class="text-sm font-bold text-slate-700">${i.s}</span></div>
+                <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(i.l)}" target="_blank" class="text-sky-300"><i class="fas fa-location-arrow"></i></a>
+            </div>
+        `).join('');
+    }
+    function editPlan() {
+        const res = prompt("編輯行程內容 (JSON格式):", JSON.stringify(plans[activeDay]));
+        if(res) { 
+            plans[activeDay] = JSON.parse(res); 
+            localStorage.setItem('ok_plan_v7', JSON.stringify(plans)); 
+            renderPlan(); 
+        }
+    }
+
+    // WALLET 計算機邏輯 (純本地運算)
+    let calcVal = "0";
+    function pressCalc(v) { calcVal === "0" ? calcVal = v : calcVal += v; updateCalc(); }
+    function clearCalc() { calcVal = "0"; document.getElementById('calc-exp').innerText = ""; updateCalc(); }
+    function solveCalc() {
+        try { document.getElementById('calc-exp').innerText = calcVal + " ="; calcVal = String(eval(calcVal)); } catch { calcVal = "Error"; }
+        updateCalc();
+    }
+    function calcTax() { calcVal = String(Math.round(eval(calcVal) / 1.1)); updateCalc(); }
+    function updateCalc() {
+        document.getElementById('calc-main').innerText = calcVal;
+        const res = isNaN(eval(calcVal)) ? 0 : eval(calcVal);
+        document.getElementById('calc-twd').innerText = `≈ NT$ ${Math.round(res * RATE)}`;
+    }
+
+    // 帳目雲端操作
+    async function saveBill() {
+        const n = document.getElementById('bill-name').value;
+        const a = document.getElementById('bill-amount').value;
+        const p = document.getElementById('bill-payer').value;
+        const m = document.getElementById('bill-method').value;
+        if(!n || !a) return alert("請輸入資訊");
+
+        const { error } = await _supabase.from('travel_bills').insert([{ 
+            name: n, amount: parseFloat(a), payer: p, method: m, image_url: tempImg 
+        }]);
+
+        if (error) alert("存檔失敗: " + error.message);
+        else {
+            document.getElementById('bill-name').value = "";
+            document.getElementById('bill-amount').value = "";
+            document.getElementById('img-preview').classList.add('hidden');
+            tempImg = "";
+        }
+    }
+
+    function renderBills() {
+        let sum00 = 0, sumYu = 0;
+        const list = document.getElementById('bill-list');
+        list.innerHTML = bills.map(b => {
+            b.payer === '00' ? sum00 += b.amount : sumYu += b.amount;
+            return `
+            <div class="bg-white p-3 rounded-2xl flex justify-between items-center border-l-4 ${b.payer === '00' ? 'border-sky-400' : 'border-rose-400'}">
+                <div class="flex items-center gap-3">
+                    ${b.image_url ? `<img src="${b.image_url}" class="w-10 h-10 rounded">` : `<div class="w-10 h-10 bg-slate-100 rounded"></div>`}
+                    <div><div class="text-xs font-bold">${b.name}</div><div class="text-[9px] text-slate-400">${b.payer} 付 | ${b.method}</div></div>
+                </div>
+                <div class="text-right"><div class="text-xs font-bold">¥${b.amount}</div><button onclick="delBill('${b.id}')" class="text-[10px] text-slate-300">刪除</button></div>
+            </div>`;
+        }).join('');
+        const diff = Math.round(Math.abs(sum00 - sumYu) / 2);
+        document.getElementById('split-summary').innerText = sum00 > sumYu ? `小宇 應給 00 約 ¥${diff}` : `00 應給 小宇 約 ¥${diff}`;
+    }
+
+    async function delBill(id) {
+        if(!confirm("確定刪除？")) return;
+        await _supabase.from('travel_bills').delete().eq('id', id);
+    }
+
+    // LISTS 雲端操作
+    async function addListItem(cat) {
+        const val = document.getElementById(`input-${cat}`).value;
+        if(!val) return;
+        await _supabase.from('travel_lists').insert([{ category: cat, item_text: val, is_done: false }]);
+        document.getElementById(`input-${cat}`).value = "";
+    }
+
+    async function toggleItem(id, currentStatus) {
+        await _supabase.from('travel_lists').update({ is_done: !currentStatus }).eq('id', id);
+    }
+
+    async function delItem(id) {
+        await _supabase.from('travel_lists').delete().eq('id', id);
+    }
+
+    function renderLists() {
+        ['pre', 'buy', 'eat'].forEach(cat => {
+            const container = document.querySelector(`#cat-${cat} .list-container`);
+            container.innerHTML = lists[cat].map((it) => `
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3" onclick="toggleItem('${it.id}', ${it.is_done})">
+                        <i class="${it.is_done ? 'fas fa-check-circle text-sky-500' : 'far fa-circle text-slate-200'}"></i>
+                        <span class="text-sm ${it.is_done ? 'line-through-text' : ''}">${it.item_text}</span>
+                    </div>
+                    <i class="fas fa-times text-slate-200" onclick="delItem('${it.id}')"></i>
                 </div>
             `).join('');
-        }
+        });
+    }
 
-        window.onload = () => {
-            switchDay(1); renderBills(); renderLists(); renderHotels();
-            document.getElementById('memo-note').value = memo;
+    // INFO 備忘錄同步
+    let memoTimeout;
+    function saveMemo() {
+        const content = document.getElementById('memo-note').value;
+        clearTimeout(memoTimeout);
+        memoTimeout = setTimeout(async () => {
+            // 先嘗試更新，若無資料則新增 (Upsert 邏輯)
+            const { error } = await _supabase.from('travel_memos').upsert([{ id: 'memo-1', content: content }]);
+            if (error) console.error("Memo 同步失敗");
+        }, 1000); // 停止輸入 1 秒後才同步，避免頻繁請求
+    }
+
+    function goTranslate(lang) { window.open(`https://translate.google.com/?sl=zh-CN&tl=${lang}&text=${encodeURIComponent(document.getElementById('trans-input').value)}&op=translate`, '_blank'); }
+    function ttsJapanese() { const msg = new SpeechSynthesisUtterance(document.getElementById('trans-input').value); msg.lang = 'ja-JP'; window.speechSynthesis.speak(msg); }
+    
+    function renderHotels() {
+        document.getElementById('hotel-info-list').innerHTML = HOTELS.map(h => `
+            <div class="bg-white rounded-3xl overflow-hidden shadow-sm">
+                <img src="${h.img}" class="w-full h-32 object-cover">
+                <div class="p-4"><div class="flex justify-between font-bold mb-2"><span>${h.name}</span><span class="text-sky-500">${h.info}</span></div>
+                <div class="text-[11px] text-slate-400">🅿️ ${h.parking} | 🕒 ${h.time}</div></div>
+            </div>
+        `).join('');
+    }
+
+    function compressImg(input) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 150; canvas.height = 150;
+                ctx.drawImage(img, 0, 0, 150, 150);
+                tempImg = canvas.toDataURL('image/jpeg', 0.6);
+                document.getElementById('img-preview').innerHTML = `<img src="${tempImg}" class="w-full h-full object-cover">`;
+                document.getElementById('img-preview').classList.remove('hidden');
+            };
+            img.src = e.target.result;
         };
-    </script>
+        reader.readAsDataURL(input.files[0]);
+    }
+
+    // --- 5. 初始啟動 ---
+    window.onload = () => {
+        switchDay(1); 
+        renderHotels();
+        fetchAllData();   // 抓取雲端資料
+        initRealtime();   // 啟動即時同步
+    };
+</script>
 </body>
 </html>
