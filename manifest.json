@@ -1,15 +1,15 @@
 {
-  "name": "Okinawa 2026",
+  "name": "Okinawa 2026 Travel App",
   "short_name": "Okinawa",
-  "start_url": "./", 
+  "start_url": "./",
   "display": "standalone",
-  "background_color": "#075985",
+  "background_color": "#F7F3EE",
   "theme_color": "#075985",
   "icons": [
     {
-      "src": "https://img.icons8.com/officel/512/shisa.png",
+      "src": "./shisa.jpg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "any"
     }
   ]
