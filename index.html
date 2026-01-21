@@ -2,13 +2,14 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>OKINAWA 2026</title>
 
-    <link rel="manifest" href="./manifest.json">
+    <link rel="manifest" href="./manifest.json?v=3">
 
-    <link rel="icon" type="image/png" href="https://img.icons8.com/officel/512/shisa.png">
-    <link rel="apple-touch-icon" href="https://img.icons8.com/officel/512/shisa.png">    
+    <link rel="apple-touch-icon" href="https://img.icons8.com/officel/512/shisa.png?v=3">
+    <link rel="icon" type="image/png" href="https://img.icons8.com/officel/512/shisa.png?v=3">
+
     <meta name="apple-mobile-web-app-title" content="Okinawa2026">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -19,11 +20,26 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #F7F3EE; color: #334155; }
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: #F7F3EE; 
+            color: #334155; 
+            /* 防止 iOS 全螢幕模式下內容被瀏海遮到 */
+            padding-top: env(safe-area-inset-top);
+        }
         .ocean-gradient { background: linear-gradient(135deg, #075985 0%, #38BDF8 100%); }
-        /* 確保內容不會被手機瀏海遮到 */
+        .card-shadow { box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.05); }
+        .nav-active { color: #0284c7; transform: translateY(-3px); font-weight: 700; }
+        .hidden { display: none; }
+        .day-btn-active { background-color: #0284c7; color: white; border-color: #0284c7; }
+        .line-through-text { text-decoration: line-through; color: #CBD5E1; }
+        .calc-btn { transition: all 0.1s; background: white; border: 1px solid #F1F5F9; }
+        .calc-btn:active { transform: scale(0.95); background: #F1F5F9; }
+        textarea, input, select { border: 1px solid #E2E8F0; border-radius: 12px; padding: 10px; outline: none; }
+        
+        /* PWA 模式下的特殊調整 */
         @media screen and (display-mode: standalone) {
-            header { padding-top: env(safe-area-inset-top); }
+            header { padding-top: 20px; }
         }
     </style>
 </head>
