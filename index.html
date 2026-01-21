@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OKINAWA 2026 | 00 & 小宇</title>
+    <title>OKINAWA 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -64,24 +65,24 @@
             </button>
         </section>
 
-        <div class="bg-white rounded-3xl p-6 card-shadow mb-6 border-t-4 border-sky-500">
-            <div class="flex justify-between items-end mb-4">
-            <div>
-                 <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Remaining Budget</p>
-                 <h2 id="remaining-twd" class="text-3xl font-bold text-slate-700">NT$ 0</h2>
-            </div>
-            <div class="text-right">
-                <p class="text-[10px] text-slate-400 font-bold uppercase">Total Goal</p>
-                <p class="text-sm font-bold text-slate-500">NT$ 50,000</p>
-            </div>
-        </div>
-        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-            <div id="budget-bar" class="bg-sky-500 h-full transition-all duration-500" style="width: 0%"></div>
-        </div>
-        <p id="budget-percent" class="text-[9px] text-slate-400 mt-2 font-bold text-right">已支出 0%</p>
-    </div>
-
         <section id="page-wallet" class="page-section hidden">
+            <div class="bg-white rounded-3xl p-6 card-shadow mb-6 border-t-4 border-sky-500">
+                <div class="flex justify-between items-end mb-4">
+                    <div>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Remaining Budget</p>
+                        <h2 id="remaining-twd" class="text-3xl font-bold text-slate-700">NT$ 0</h2>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] text-slate-400 font-bold uppercase">Total Goal</p>
+                        <p class="text-sm font-bold text-slate-500">NT$ 50,000</p>
+                    </div>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                    <div id="budget-bar" class="bg-sky-500 h-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <p id="budget-percent" class="text-[9px] text-slate-400 mt-2 font-bold text-right">已支出 0%</p>
+            </div>
+
             <div class="bg-white rounded-3xl p-5 card-shadow mb-6">
                 <div class="flex justify-between mb-2 px-1">
                     <span class="text-[10px] font-bold text-slate-400">JPY TO TWD (0.21)</span>
@@ -204,11 +205,14 @@
     const SUPABASE_KEY = 'sb_publishable_jMgxCh5redMUsm4rMLifXQ_iL6JEpDE';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // --- 2. 基礎資料與變數 ---
+    // --- 2. 基礎資料與預算變數 ---
     const RATE = 0.21;
+    const FIXED_COSTS = 19000 + 7500 + 2000; // 機票+住宿+租車 (TWD)
+    const TOTAL_BUDGET = 50000;              // 總預算 (TWD)
+    
     let activeDay = 1;
     let tempImg = "";
-
+    
     const HOTELS = [
         { name: "JR九州飯店 Blossom那霸", img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=300", info: "D1", parking: "1,500 JPY/晚", time: "15:00 In / 11:00 Out" },
         { name: "沖繩蒙特利 Spa 度假酒店", img: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=300", info: "D2", parking: "500 JPY/晚", time: "14:00 In / 11:00 Out" },
@@ -222,15 +226,13 @@
         4: [{ t: "10:30", s: "永旺夢樂城", l: "Aeon Mall Rycom" }, { t: "12:00", s: "美食街午餐", l: "Rycom Food Court" }, { t: "14:45", s: "瀨長島看飛機", l: "Umikaji Terrace" }, { t: "16:30", s: "還車結束", l: "Naha Airport" }]
     };
 
-    // 本地緩存變數（初始先從 LocalStorage 拿，隨後會被雲端覆蓋）
     let plans = JSON.parse(localStorage.getItem('ok_plan_v7')) || defaultPlan;
     let bills = [];
     let lists = { pre: [], buy: [], eat: [] };
     let memoText = "";
 
-    // --- 3. 雲端同步核心邏輯 (Fetch & Realtime) ---
+    // --- 3. 雲端同步核心邏輯 ---
 
-    // 從雲端抓取所有資料
     async function fetchAllData() {
         // 抓帳目
         const { data: bData } = await _supabase.from('travel_bills').select('*').order('created_at', { ascending: false });
@@ -245,14 +247,12 @@
         }
 
         // 抓備忘錄
-        const { data: mData } = await _supabase.from('travel_memos').select('content').limit(1).single();
+        const { data: mData } = await _supabase.from('travel_memos').select('content').eq('id', 'memo-1').single();
         if (mData) { 
-            memoText = mData.content; 
-            document.getElementById('memo-note').value = memoText;
+            document.getElementById('memo-note').value = mData.content;
         }
     }
 
-    // 開啟即時監聽 (Realtime)
     function initRealtime() {
         _supabase
             .channel('okinawa-sync')
@@ -272,13 +272,13 @@
         window.scrollTo(0,0);
     }
 
-    // PLAN 行程
     function switchDay(d) {
         activeDay = d;
         document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('day-btn-active'));
         document.getElementById(`d${d}-btn`).classList.add('day-btn-active');
         renderPlan();
     }
+    
     function renderPlan() {
         document.getElementById('itinerary-content').innerHTML = plans[activeDay].map(i => `
             <div class="bg-white p-4 rounded-2xl shadow-sm flex justify-between items-center">
@@ -288,6 +288,7 @@
             </div>
         `).join('');
     }
+    
     function editPlan() {
         const res = prompt("編輯行程內容 (JSON格式):", JSON.stringify(plans[activeDay]));
         if(res) { 
@@ -297,7 +298,7 @@
         }
     }
 
-    // WALLET 計算機邏輯 (純本地運算)
+    // 計算機
     let calcVal = "0";
     function pressCalc(v) { calcVal === "0" ? calcVal = v : calcVal += v; updateCalc(); }
     function clearCalc() { calcVal = "0"; document.getElementById('calc-exp').innerText = ""; updateCalc(); }
@@ -312,7 +313,7 @@
         document.getElementById('calc-twd').innerText = `≈ NT$ ${Math.round(res * RATE)}`;
     }
 
-    // 帳目雲端操作
+    // 帳目與預算
     async function saveBill() {
         const n = document.getElementById('bill-name').value;
         const a = document.getElementById('bill-amount').value;
@@ -333,75 +334,59 @@
         }
     }
 
-            // 定義固定支出 (TWD)
-        const FIXED_COSTS = 19000 + 7500 + 2000; 
-        const TOTAL_BUDGET = 50000;
+    function renderBills() {
+        let sumJPY = 0;
+        let sum00 = 0, sumYu = 0;
+        const list = document.getElementById('bill-list');
         
-        function renderBills() {
-            let sumJPY = 0;
-            const list = document.getElementById('bill-list');
-            
-            // 1. 計算雲端帳目總額 (JPY)
-            list.innerHTML = bills.map(b => {
-                sumJPY += b.amount;
-                return `
-                <div class="bg-white p-3 rounded-2xl flex justify-between items-center border-l-4 ${b.payer === '00' ? 'border-sky-400' : 'border-rose-400'} mb-3">
-                    <div class="flex items-center gap-3">
-                        ${b.image_url ? `<img src="${b.image_url}" class="w-10 h-10 rounded">` : `<div class="w-10 h-10 bg-slate-100 rounded"></div>`}
-                        <div>
-                            <div class="text-xs font-bold">${b.name}</div>
-                            <div class="text-[9px] text-slate-400">${b.payer} 付 | ${b.method}</div>
-                        </div>
+        list.innerHTML = bills.map(b => {
+            sumJPY += b.amount;
+            b.payer === '00' ? sum00 += b.amount : sumYu += b.amount;
+            return `
+            <div class="bg-white p-3 rounded-2xl flex justify-between items-center border-l-4 ${b.payer === '00' ? 'border-sky-400' : 'border-rose-400'} mb-3">
+                <div class="flex items-center gap-3">
+                    ${b.image_url ? `<img src="${b.image_url}" class="w-10 h-10 rounded">` : `<div class="w-10 h-10 bg-slate-100 rounded"></div>`}
+                    <div>
+                        <div class="text-xs font-bold">${b.name}</div>
+                        <div class="text-[9px] text-slate-400">${b.payer} 付 | ${b.method}</div>
                     </div>
-                    <div class="text-right">
-                        <div class="text-xs font-bold">¥${b.amount.toLocaleString()}</div>
-                        <button onclick="delBill('${b.id}')" class="text-[10px] text-slate-300">刪除</button>
-                    </div>
-                </div>`;
-            }).join('');
+                </div>
+                <div class="text-right">
+                    <div class="text-xs font-bold">¥${b.amount.toLocaleString()}</div>
+                    <button onclick="delBill('${b.id}')" class="text-[10px] text-slate-300">刪除</button>
+                </div>
+            </div>`;
+        }).join('');
+    
+        // 預算更新
+        const variableCostsTWD = Math.round(sumJPY * RATE);
+        const totalSpentTWD = FIXED_COSTS + variableCostsTWD;
+        const remainingTWD = TOTAL_BUDGET - totalSpentTWD;
         
-            // 2. 預算核心計算
-            const variableCostsTWD = Math.round(sumJPY * RATE); // 浮動支出 (台幣)
-            const totalSpentTWD = FIXED_COSTS + variableCostsTWD; // 總支出
-            const remainingTWD = TOTAL_BUDGET - totalSpentTWD; // 剩餘預算
-            
-            // 3. 更新 UI
-            document.getElementById('remaining-twd').innerText = `NT$ ${remainingTWD.toLocaleString()}`;
-            
-            // 4. 更新進度條
-            const spentPercent = Math.min((totalSpentTWD / TOTAL_BUDGET) * 100, 100);
-            document.getElementById('budget-bar').style.width = `${spentPercent}%`;
-            document.getElementById('budget-percent').innerText = `已支出 ${Math.round(spentPercent)}%`;
-        
-            // 5. 處理負債警告
-            if (remainingTWD < 0) {
-                document.getElementById('remaining-twd').classList.replace('text-slate-700', 'text-rose-500');
-            } else {
-                document.getElementById('remaining-twd').classList.replace('text-rose-500', 'text-slate-700');
-            }
-        
-            // 更新原本的分帳總結 (維持昨天的功能)
-            updateSplitSummary();
+        document.getElementById('remaining-twd').innerText = `NT$ ${remainingTWD.toLocaleString()}`;
+        const spentPercent = Math.min((totalSpentTWD / TOTAL_BUDGET) * 100, 100);
+        document.getElementById('budget-bar').style.width = `${spentPercent}%`;
+        document.getElementById('budget-percent').innerText = `已支出 ${Math.round(spentPercent)}%`;
+    
+        if (remainingTWD < 0) {
+            document.getElementById('remaining-twd').style.color = '#F43F5E';
+        } else {
+            document.getElementById('remaining-twd').style.color = '#334155';
         }
 
-        function updateSplitSummary() {
-            let sum00 = 0, sumYu = 0;
-            bills.forEach(b => {
-                b.payer === '00' ? sum00 += b.amount : sumYu += b.amount;
-            });
-            const diff = Math.round(Math.abs(sum00 - sumYu) / 2);
-            const summaryEl = document.getElementById('split-summary');
-            if (summaryEl) {
-                summaryEl.innerText = sum00 > sumYu ? `小宇 應給 00 約 ¥${diff.toLocaleString()}` : `00 應給 小宇 約 ¥${diff.toLocaleString()}`;
-            }
+        // 分帳總結
+        const diff = Math.round(Math.abs(sum00 - sumYu) / 2);
+        const summaryEl = document.getElementById('split-summary');
+        if (summaryEl) {
+            summaryEl.innerText = sum00 > sumYu ? `小宇 應給 00 約 ¥${diff.toLocaleString()}` : `00 應給 小宇 約 ¥${diff.toLocaleString()}`;
         }
+    }
 
     async function delBill(id) {
         if(!confirm("確定刪除？")) return;
         await _supabase.from('travel_bills').delete().eq('id', id);
     }
 
-    // LISTS 雲端操作
     async function addListItem(cat) {
         const val = document.getElementById(`input-${cat}`).value;
         if(!val) return;
@@ -432,16 +417,13 @@
         });
     }
 
-    // INFO 備忘錄同步
     let memoTimeout;
     function saveMemo() {
         const content = document.getElementById('memo-note').value;
         clearTimeout(memoTimeout);
         memoTimeout = setTimeout(async () => {
-            // 先嘗試更新，若無資料則新增 (Upsert 邏輯)
             const { error } = await _supabase.from('travel_memos').upsert([{ id: 'memo-1', content: content }]);
-            if (error) console.error("Memo 同步失敗");
-        }, 1000); // 停止輸入 1 秒後才同步，避免頻繁請求
+        }, 1000);
     }
 
     function goTranslate(lang) { window.open(`https://translate.google.com/?sl=zh-CN&tl=${lang}&text=${encodeURIComponent(document.getElementById('trans-input').value)}&op=translate`, '_blank'); }
@@ -475,12 +457,11 @@
         reader.readAsDataURL(input.files[0]);
     }
 
-    // --- 5. 初始啟動 ---
     window.onload = () => {
         switchDay(1); 
         renderHotels();
-        fetchAllData();   // 抓取雲端資料
-        initRealtime();   // 啟動即時同步
+        fetchAllData();   
+        initRealtime();   
     };
 </script>
 </body>
